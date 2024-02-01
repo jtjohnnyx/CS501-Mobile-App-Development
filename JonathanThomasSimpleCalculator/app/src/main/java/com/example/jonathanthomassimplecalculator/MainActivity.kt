@@ -32,12 +32,30 @@ class MainActivity : AppCompatActivity() {
             if (num1 != null && num2 != null) {
                 if (operand.selectedItem.toString() == "+") {
                     ans = num1 + num2
+                    result.text = "Result:  $ans"
                 } else if (operand.selectedItem.toString() == "-") {
                     ans = num1 - num2
-                }
-                result.text = "Result:  $ans"
+                    result.text = "Result:  $ans"
+                } else if (operand.selectedItem.toString() == "×") {
+                    ans = num1 * num2
+                    result.text = "Result:  $ans"
+                } else if (operand.selectedItem.toString() == "÷") {
+                    if (num2 == 0.0) {
+                        result.text = "Cannot divide by 0!"
+                    } else {
+                        ans = num1 / num2
+                        result.text = "Result:  $ans"
+                    }
+                } else
+                    if (num2 == 0.0) {
+                        result.text = "Cannot perform the modulo operation with 0!"
+                    } else {
+                        ans = num1 % num2
+                        result.text = "Result:  $ans"
+                    }
+
             } else {
-                result.text = "Please enter valid input!"
+                result.text = "Please enter valid input (numbers only)!"
             }
         }
 
