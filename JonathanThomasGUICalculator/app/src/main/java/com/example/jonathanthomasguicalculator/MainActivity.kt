@@ -1,22 +1,23 @@
 package com.example.jonathanthomasguicalculator
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+//import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.lang.StringBuilder
 import java.util.LinkedList
 import kotlin.math.sqrt
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val banner = findViewById<TextView>(R.id.banner)
+        //val banner = findViewById<TextView>(R.id.banner)
         val calcResult = findViewById<EditText>(R.id.calc_result)
 
         val button1 = findViewById<Button>(R.id.button41)
@@ -42,234 +43,162 @@ class MainActivity : AppCompatActivity() {
         val buttondel = findViewById<Button>(R.id.button53)
         val buttonac = findViewById<Button>(R.id.button11)
 
-        var currentInput = StringBuilder("")
-
-        val inputQueue: LinkedList<String> = LinkedList()
-
         button1.setOnClickListener {
             calcResult.append("1")
-            currentInput.append("1")
-            //banner.text = inputQueue.toString()
         }
 
         button2.setOnClickListener {
             calcResult.append("2")
-            currentInput.append("2")
-            //banner.text = inputQueue.toString()
         }
 
         button3.setOnClickListener {
             calcResult.append("3")
-            currentInput.append("3")
-            //banner.text = inputQueue.toString()
+           //Log.d("eval", evaluateString("-2*-3"))
         }
 
         button4.setOnClickListener {
             calcResult.append("4")
-            currentInput.append("4")
-            //banner.text = inputQueue.toString()
         }
 
         button5.setOnClickListener {
             calcResult.append("5")
-            currentInput.append("5")
-            //banner.text = inputQueue.toString()
         }
 
         button6.setOnClickListener {
             calcResult.append("6")
-            currentInput.append("6")
-            //banner.text = inputQueue.toString()
         }
 
         button7.setOnClickListener {
             calcResult.append("7")
-            currentInput.append("7")
-            //banner.text = inputQueue.toString()
         }
 
         button8.setOnClickListener {
             calcResult.append("8")
-            currentInput.append("8")
-            //banner.text = inputQueue.toString()
         }
 
         button9.setOnClickListener {
             calcResult.append("9")
-            currentInput.append("9")
-            //banner.text = inputQueue.toString()
         }
 
         button0.setOnClickListener {
             calcResult.append("0")
-            currentInput.append("0")
-            //banner.text = inputQueue.toString()
         }
 
         buttondot.setOnClickListener {
             calcResult.append(".")
-            currentInput.append(".")
-            //banner.text = inputQueue.toString()
         }
 
         buttonplus.setOnClickListener {
             calcResult.append("+")
-            if (currentInput.isNotBlank()) {
-                inputQueue.add(currentInput.toString())
-            }
-            inputQueue.add("+")
-            currentInput.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttonminus.setOnClickListener {
             calcResult.append("-")
-            if (currentInput.isNotBlank()) {
-                inputQueue.add(currentInput.toString())
-            }
-            inputQueue.add("-")
-            currentInput.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttonmul.setOnClickListener {
             calcResult.append("*")
-            if (currentInput.isNotBlank()) {
-                inputQueue.add(currentInput.toString())
-            }
-            inputQueue.add("*")
-            currentInput.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttondiv.setOnClickListener {
             calcResult.append("/")
-            if (currentInput.isNotBlank()) {
-                inputQueue.add(currentInput.toString())
-            }
-            inputQueue.add("/")
-            currentInput.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttonmod.setOnClickListener {
             calcResult.append("%")
-            if (currentInput.isNotBlank()) {
-                inputQueue.add(currentInput.toString())
-            }
-            inputQueue.add("%")
-            currentInput.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttonequals.setOnClickListener {
-            inputQueue.add(currentInput.toString())
-            currentInput.clear()
-            val res = evaluate(inputQueue)
-            //banner.text = inputQueue.toString()
+            val res = evaluateString(calcResult.text.toString())
             calcResult.setText(res)
-            //currentInput.append(res)
         }
 
         buttonsqrt.setOnClickListener {
-            var sqrt = sqrt(currentInput.toString().toDouble()).toString()
+            val precision = 2
+            val sqrt = String.format("%.${precision}f", sqrt(calcResult.text.toString().toDouble()))
             calcResult.setText(sqrt)
-            inputQueue.add(sqrt)
-            currentInput.clear()
-
         }
 
         buttonac.setOnClickListener {
-            inputQueue.clear()
-            currentInput.clear()
             calcResult.text.clear()
-            //banner.text = inputQueue.toString()
         }
 
         buttondel.setOnClickListener {
             if (calcResult.text.toString().isNotEmpty()) {
-                val last = calcResult.text.toString().last()
-                if (last == '+' || last == '-' || last == '*' || last == '/' || last == '%') {
-                    inputQueue.removeLast()
-                } else
-                    if (currentInput.isNotEmpty()) {
-                        currentInput.deleteCharAt(currentInput.length - 1)
-                    } else
-                        calcResult.setText(calcResult.text.toString().dropLast(1))
+                val res = calcResult.text.toString().dropLast(1)
+                calcResult.setText(res)
             }
-            calcResult.setText(calcResult.text.toString().dropLast(1))
-            //banner.text = inputQueue.toString()
-            //banner.text = currentInput.toString()
         }
 
 
         calcResult.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                inputQueue.clear()
-                val res = evaluateString(inputQueue, calcResult.text.toString())
+                val res = evaluateString(calcResult.text.toString())
                 calcResult.setText(res)
-                //banner.text = inputQueue.toString()
                 return@OnKeyListener true // Consume the event
 
-            }/* else if (event.action == KeyEvent.ACTION_DOWN && isNumberKey(keyCode)) {
-                val numberPressed = keyCode - KeyEvent.KEYCODE_0
-                banner.text = "banana"
-                currentInput.append(numberPressed.toString())
-                banner.text = inputQueue.toString()
-                return@OnKeyListener true
-
-            } else if (event.action == KeyEvent.ACTION_DOWN && /*isOperatorKey(keyCode)*/keyCode == 81) {
-                val operatorPressed = getOperatorPressed(keyCode)
-                banner.text = "banana"
-                /*if (currentInput.isNotBlank()) {
-                    inputQueue.add(currentInput.toString())
-                }
-                inputQueue.add(operatorPressed)
-                currentInput.clear()
-                banner.text = inputQueue.toString()*/
-                return@OnKeyListener true
-
-            } else*/
+            }
             false // Let the system handle other events
         })
 
 
     }
 
-    private fun evaluateString(inputQueue: LinkedList<String>, calc: String): String {
+    private fun isOperator(str: String): Boolean {
+        return str == "+" || str == "-" || str == "*" || str == "/" || str == "%"
+    }
 
-        for (char in calc) {
-            inputQueue.add(char.toString())
+    /*private fun createCopy(calc: String): LinkedList<String> {
+
+        val res: LinkedList<String> = LinkedList()
+
+        for (index in calc.indices) {
+            if (isOperator(calc[index])) {
+                if (calc[index] == '-') {
+                    if (index == 0)
+                        res.add("0")
+                res.add(calc[index].toString())
+                }
+            } else
+                str += char
         }
-        return evaluate(inputQueue)
-    }
-    /*
-    private fun isNumberKey(keyCode: Int): Boolean {
-        return keyCode in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9
-    }
-
-    private fun isOperatorKey(keyCode: Int): Boolean {
-        return keyCode == KeyEvent.KEYCODE_PLUS ||
-                keyCode == KeyEvent.KEYCODE_MINUS ||
-                keyCode == KeyEvent.KEYCODE_STAR ||
-                keyCode == KeyEvent.KEYCODE_SLASH
-    }
-
-    private fun getOperatorPressed(keyCode: Int): String {
-        return when (keyCode) {
-            KeyEvent.KEYCODE_PLUS -> "+"
-            KeyEvent.KEYCODE_MINUS -> "-"
-            KeyEvent.KEYCODE_STAR -> "*"
-            KeyEvent.KEYCODE_SLASH -> "/"
-            else -> throw IllegalArgumentException("Invalid operator key code")
-        }
+        return res
     }*/
+
+    private fun evaluateString(calc: String): String {
+
+        val res: LinkedList<String> = LinkedList()
+
+        var minus = false
+
+        var inputs = calc.split("(?<=\\+)|(?=\\+)|(?<=\\*)|(?=\\*)|(?<=\\-)|(?=\\-)|(?<=\\/)|(?=\\/)|(?<=\\%)|(?=\\%)".toRegex())
+        inputs = inputs.filterNot{ it.isBlank()}
+        Log.d("inputs",inputs.toString())
+
+        for (index in inputs.indices) {
+            if (inputs[index] == "-" && index == 0)
+                minus = true
+            else if (inputs[index] == "-" && index > 0) {
+                if (isOperator(inputs[index - 1]))
+                    minus = true
+                else
+                    res.add(inputs[index])
+            } else
+                if (minus == true) {
+                    res.add("-" + inputs[index])
+                    minus = false
+                } else
+                    res.add(inputs[index])
+            //Log.d("minus",minus.toString())
+            Log.d("res",res.toString())
+        }
+        return evaluate(res)
+    }
 
     private fun evaluate(inputQueue: LinkedList<String>): String {
 
         var ans = 0.0
-        val precision = 3
-        val str = ""
+        val precision = 2
 
         while (inputQueue.size > 1) {
 
@@ -280,6 +209,8 @@ class MainActivity : AppCompatActivity() {
             if (op == "+") {
                 ans = num1 + num2
             } else if (op == "-") {
+                Log.d("Num1", num1.toString())
+                Log.d("Num2", num2.toString())
                 ans = num1 - num2
             } else if (op == "*") {
                 ans = num1 * num2
@@ -294,9 +225,7 @@ class MainActivity : AppCompatActivity() {
                     ans = num1 % num2
 
                 }
-            val str = String.format("%.${precision}f", ans)
-            inputQueue.addFirst(str)
-            //inputQueue.clear()
+            inputQueue.addFirst(ans.toString())
         }
 
         return String.format("%.${precision}f", ans)
